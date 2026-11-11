@@ -1,16 +1,22 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static GameManager Instance { get; private set; }
+
+    public int CurrentEnergy { get; private set; } = 0;
+
+    private void Awake()
     {
-        
+        // Делаем так, чтобы GameManager был один на всю игру
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddEnergy(int amount)
     {
-        
+        CurrentEnergy += amount;
+        EventManager.EnergyChanged(CurrentEnergy); // Кричим всем: "Энергия изменилась!"
+        Debug.Log($"Энергия: {CurrentEnergy}");
     }
 }

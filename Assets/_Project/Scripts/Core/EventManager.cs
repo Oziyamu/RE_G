@@ -1,16 +1,15 @@
+using System;
 using UnityEngine;
 
-public class EventManager : MonoBehaviour
+public static class EventManager
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    // Событие: Энергия изменилась (передает текущее кол-во)
+    public static Action<int> OnEnergyChanged;
+    
+    // Событие: Игровой цикл завершен (5 минут прошло)
+    public static Action OnCycleCompleted;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Методы для вызова событий
+    public static void EnergyChanged(int amount) => OnEnergyChanged?.Invoke(amount);
+    public static void CycleCompleted() => OnCycleCompleted?.Invoke();
 }
