@@ -4,23 +4,24 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     public float speed = 15f;
-    public float damage = 10f;
+    public int damage = 20; // Урон пули
 
     void Start()
     {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0f; // Пуля не падает вниз
-        // Летим туда, куда смотрит пуля (её ось Y)
+        rb.gravityScale = 0f;
         rb.linearVelocity = transform.up * speed;
-        
-        // Уничтожаем пулю через 2 секунды, чтобы не засорять память
         Destroy(gameObject, 2f);
     }
 
-    // Позже здесь будет логика урона
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Если во что-то попали — уничтожаем пулю
-        Destroy(gameObject);
+        // Если попали во врага — наносим урон
+        if (collision.CompareTag("Enemy"))
+        {
+            EnemyController enemy = collision.GetComponent<EnemyController>();
+            if (enemy != null) enemy.TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
 }
