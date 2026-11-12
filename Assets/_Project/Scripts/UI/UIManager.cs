@@ -1,28 +1,30 @@
 using UnityEngine;
-using UnityEngine.UI; // Используем стандартный UI
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public Text energyText; // Изменено с TextMeshProUGUI
-    public Text timerText;  // Изменено с TextMeshProUGUI
+    public Text energyText;
+    public Text timerText;
+    public Text healthText; // Новое поле
     public GameObject endScreen;       
 
     void OnEnable()
     {
         EventManager.OnEnergyChanged += UpdateEnergyUI;
         EventManager.OnCycleCompleted += ShowEndScreen;
+        EventManager.OnHealthChanged += UpdateHealthUI;
     }
 
     void OnDisable()
     {
         EventManager.OnEnergyChanged -= UpdateEnergyUI;
         EventManager.OnCycleCompleted -= ShowEndScreen;
+        EventManager.OnHealthChanged -= UpdateHealthUI;
     }
 
     void Start()
     {
         if (endScreen != null) endScreen.SetActive(false);
-        UpdateEnergyUI(GameManager.Instance.CurrentEnergy);
     }
 
     void Update()
@@ -35,8 +37,12 @@ public class UIManager : MonoBehaviour
 
     void UpdateEnergyUI(int amount)
     {
-        if (energyText != null)
-            energyText.text = "ENERGY: " + amount;
+        if (energyText != null) energyText.text = "ENERGY: " + amount;
+    }
+
+    void UpdateHealthUI(int current, int max)
+    {
+        if (healthText != null) healthText.text = "HP: " + current + " / " + max;
     }
 
     void ShowEndScreen()
@@ -44,10 +50,12 @@ public class UIManager : MonoBehaviour
         if (endScreen != null)
         {
             endScreen.SetActive(true);
-            // Ищем текст внутри экрана итогов и меняем его
             Text endText = endScreen.GetComponentInChildren<Text>();
             if (endText != null)
-                endText.text = "Цикл завершен!\nСобрано энергии: " + GameManager.Instance.CurrentEnergy;
+            {
+                string reason = GameManager.Instance.currentHealth <= 0 ? "КОРАБЛЬ УНИЧТОЖЕН" : "ЦИКЛ ЗАВЕРШЕН";
+                endText.text = reason + "\nСобрано энергии: " + GameManager.Instance.CurrentEnergy;
+            }
         }
     }
 }

@@ -3,13 +3,11 @@ using UnityEngine;
 
 public static class EventManager
 {
-    // Событие: Энергия изменилась (передает текущее кол-во)
     public static Action<int> OnEnergyChanged;
-    
-    // Событие: Игровой цикл завершен (5 минут прошло)
     public static Action OnCycleCompleted;
+    public static Action<int, int> OnHealthChanged; // Текущее, Максимальное
 
-    // Методы для вызова событий
     public static void EnergyChanged(int amount) => OnEnergyChanged?.Invoke(amount);
     public static void CycleCompleted() => OnCycleCompleted?.Invoke();
+    public static void HealthChanged(int current, int max) => OnHealthChanged?.Invoke(current, max);
 }

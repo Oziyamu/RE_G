@@ -3,15 +3,25 @@ using UnityEngine;
 public class WeaponSystem : MonoBehaviour
 {
     [Header("Настройки оружия")]
-    public GameObject bulletPrefab; // Сюда перетащим нашу пулю
-    public Transform firePoint;     // Откуда стрелять
-    public float fireRate = 0.2f;   // Задержка между выстрелами
+    public GameObject bulletPrefab; 
+    public Transform firePoint;     
+    public float fireRate = 0.2f;   
+
+    [Header("Отдача (Juice)")]
+    public float shakeDuration = 0.05f; // Было 0.1f
+    public float shakeMagnitude = 0.05f; // Было 0.15f
 
     private float nextFireTime = 0f;
+    private CameraFollow camFollow;
+
+    void Start()
+    {
+        // Находим камеру один раз при старте
+        camFollow = Camera.main.GetComponent<CameraFollow>();
+    }
 
     void Update()
     {
-        // Если нажали левую кнопку мыши и прошло достаточно времени
         if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
         {
             Shoot();
@@ -23,8 +33,13 @@ public class WeaponSystem : MonoBehaviour
     {
         if (bulletPrefab != null && firePoint != null)
         {
-            // Создаем пулю
             Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            
+            // ТРЯСКА КАМЕРЫ
+            if (camFollow != null)
+            {
+                camFollow.TriggerShake(shakeDuration, shakeMagnitude);
+            }
         }
     }
 }
